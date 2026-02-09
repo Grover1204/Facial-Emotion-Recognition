@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+model/model.pth
+facial-expression-api/model/model.pth
+test_image.jpg
+user_test_image.jpg
+facial-expression-api/test_face.png
