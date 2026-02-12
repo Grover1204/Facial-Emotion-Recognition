@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 import torch
 import torch.nn as nn
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from utils.preprocess import preprocess_image
@@ -41,6 +42,14 @@ async def lifespan(app: FastAPI):
     model = None
 
 app = FastAPI(title="Facial Expression Recognition API", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def read_root():

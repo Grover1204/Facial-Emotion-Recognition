@@ -57,7 +57,29 @@ curl -X POST "http://localhost:8000/predict" \
      -F "file=@/path/to/image.jpg"
 ```
 
-## Project Structure
-- `app.py`: Main FastAPI application.
-- `model/`: Contains training script (`train.py`) and shared architecture (`architecture.py`).
-- `utils/`: Helper scripts for preprocessing and labels.
+## Deployment
+
+### Hugging Face Spaces (Docker)
+This project is ready for deployment on Hugging Face Spaces.
+
+1.  **Create a New Space**:
+    -   Go to [Hugging Face Spaces](https://huggingface.co/spaces).
+    -   Select **Docker** as the SDK.
+    -   Choose a name (e.g., `facial-emotion-api`).
+
+2.  **Upload Code**:
+    -   Push this repository to the Space (using git).
+    -   **Important**: Ensure `model/model.pth` is included. Since it is large, use Git LFS:
+        ```bash
+        git lfs install
+        git lfs track "facial-expression-api/model/model.pth"
+        git add .gitattributes
+        git commit -m "Add model with LFS"
+        git push space main
+        ```
+    -   Alternatively, upload the file manually via the "Files" tab on Hugging Face.
+
+3.  **Access the API**:
+    -   Your API will be live at `https://<your-username>-<space-name>.hf.space/docs`.
+    -   The `/predict` endpoint will be available for public use.
+
