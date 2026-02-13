@@ -8,6 +8,7 @@ import torch.nn as nn
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import os
 
 from utils.preprocess import preprocess_image
 from utils.labels import EMOTION_LABELS
@@ -19,21 +20,32 @@ from model.architecture import FERModel
 
 # --- App State & Lifespan ---
 model = None
+load_error = None
 DEVICE = torch.device("cpu") # Inference on CPU is fine usually
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load model on startup
-    global model
+    global model, load_error
     try:
         temp_model = FERModel()
-        state_dict = torch.load("model/model.pth", map_location=DEVICE)
+        
+        # Check potential paths
+        if os.path.exists("model/model.pth"):
+            model_path = "model/model.pth"
+        elif os.path.exists("model.pth"):
+            model_path = "model.pth"
+        else:
+            raise FileNotFoundError("model.pth not found in 'model/' or root.")
+            
+        state_dict = torch.load(model_path, map_location=DEVICE)
         temp_model.load_state_dict(state_dict)
         temp_model.to(DEVICE)
         temp_model.eval()
         model = temp_model
         print("Model loaded successfully.")
     except Exception as e:
+        load_error = str(e)
         print(f"Error loading model: {e}")
         print("API will start but predictions will fail until model is fixed.")
         model = None
@@ -44,6 +56,25 @@ async def lifespan(app: FastAPI):
     model = None
 
 app = FastAPI(title="Facial Expression Recognition API", lifespan=lifespan)
+
+@app.get("/debug")
+def debug_status():
+    import os
+    cwd = os.getcwd()
+    files_root = os.listdir(cwd)
+    files_model = os.listdir("model") if os.path.exists("model") else "model dir missing"
+    model_path = "model/model.pth"
+    model_size = os.path.getsize(model_path) if os.path.exists(model_path) else "File missing"
+    
+    return {
+        "status": "Model Loaded" if model else "Model Failed",
+        "error": load_error,
+        "cwd": cwd,
+        "files_root": files_root,
+        "files_model": files_model,
+        "model_file_exists": os.path.exists(model_path),
+        "model_size_bytes": model_size
+    }
 
 app.add_middleware(
     CORSMiddleware,
