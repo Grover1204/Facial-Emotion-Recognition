@@ -1,3 +1,13 @@
+---
+title: Facial Expression Recognition
+emoji: 🎭
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+app_port: 7860
+---
+
 # Facial Expression Recognition API
 
 A FastAPI-based machine learning API for detecting facial expressions from images.
