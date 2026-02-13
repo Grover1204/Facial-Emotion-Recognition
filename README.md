@@ -92,3 +92,11 @@ This project is ready for deployment on Hugging Face Spaces.
     -   Your API will be live at `https://<your-username>-<space-name>.hf.space/docs`.
     -   The `/predict` endpoint will be available for public use.
 
+## 🚀 Live Demo
+
+Check out the live model here: **[Facial Expression Recognition - Live](https://huggingface.co/spaces/Grover1204/facial_expression)**
+
+You can test the API directly via the interactive documentation:
+👉 **[Swagger UI (Test the Model)](https://grover1204-facial-expression.hf.space/docs)**
+
+
