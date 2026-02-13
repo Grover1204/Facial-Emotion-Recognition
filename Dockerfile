@@ -11,13 +11,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first (for caching)
-COPY facial-expression-api/requirements.txt .
+COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY facial-expression-api/ .
+COPY . .
 
 # Expose port 7860 (Hugging Face Spaces default)
 EXPOSE 7860
