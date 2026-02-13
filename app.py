@@ -26,15 +26,17 @@ async def lifespan(app: FastAPI):
     # Load model on startup
     global model
     try:
-        model = FERModel()
+        temp_model = FERModel()
         state_dict = torch.load("model/model.pth", map_location=DEVICE)
-        model.load_state_dict(state_dict)
-        model.to(DEVICE)
-        model.eval()
+        temp_model.load_state_dict(state_dict)
+        temp_model.to(DEVICE)
+        temp_model.eval()
+        model = temp_model
         print("Model loaded successfully.")
     except Exception as e:
         print(f"Error loading model: {e}")
         print("API will start but predictions will fail until model is fixed.")
+        model = None
     
     yield
     
